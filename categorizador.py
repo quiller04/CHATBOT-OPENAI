@@ -4,24 +4,40 @@ import os
 
 load_dotenv()
 cliente = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-modelo = "gpt-4"
+modelo = "gpt-3.5-turbo-0125"
 
 def categoriza_produto(nome_produto, lista_categorias_possiveis):
     prompt_sistema = f"""
-        Você é um categorizador de produtos.
-        Você deve assumir as categorias presentes na lista abaixo.
+        Você é um categorizador de produtos.  
+        Você deve classificar o produto informado com base nas categorias listadas abaixo.  
 
-        # Lista de Categorias Válidas
-        {lista_categorias_possiveis.split(",")}
+        # Lista de Categorias Válidas  
+        {lista_categorias_possiveis.split(",")}  
 
-        # Formato da Saída
-        Produto: Nome do Produto
-        Categoria: apresente a categoria do produto
+        # Regras de Categorização  
+        - **Apenas** utilize as categorias fornecidas.  
+        - **Não crie, invente ou sugira categorias novas.**  
+        - Se o produto **não se encaixar em nenhuma categoria**, retorne exatamente:  
 
-        # Exemplo de Saída
-        Produto: Escova elétrica com recarga solar
-        Categoria: Eletrônicos Verdes
+        # Formato da Saída  
+        Produto: Nome do Produto  
+        Categoria: [Categoria correspondente]  
 
+        # Exemplo de Saída  
+        Produto: Escova elétrica com recarga solar  
+        Categoria: Eletrônicos Verdes  
+
+        # Exemplo de Saída  
+        Produto: macarrão com linguiça  
+        Categoria: categoria não encontrada, Por favor, forneça mais detalhes sobre o produto.
+
+        # Exemplo de Saída  
+        Produto: Dragon Ball  
+        Categoria: Games  
+
+        # Exemplo de Saída  
+        Produto: Planta  
+        Categoria: Árvore
     """
 
     resposta = cliente.chat.completions.create(
